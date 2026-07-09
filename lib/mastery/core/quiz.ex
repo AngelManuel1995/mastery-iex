@@ -56,11 +56,34 @@ defmodule Mastery.Core.Quiz do
   end
 
   defp move_template(quiz, field) do
+    quiz
+    |> remove_template_from_category
+    |> add_template_to_field(field)
   end
 
   defp remove_template_from_category(quiz) do
+    template = template(quiz)
+
+    new_category_templates =
+      quiz.templates
+      |> Map.fetch!(template.category)
+      |> List.delete(template)
+
+    new_templates =
+      if new_category_templates == [] do
+        Map.delete(quiz.templates, template.category)
+      else
+        Map.put(quiz.templates, template.category, new_category_templates)
+      end
+
+    Map.put(quiz, :templates, new_templates)
   end
 
   defp add_template_to_field(quiz, field) do
+    template = template(quiz)
+    list = Map.get(quiz, field)
+    Map.put(quiz, field, [template | list])
   end
+
+  defp template(quiz), do: quiz.current_question.template
 end
