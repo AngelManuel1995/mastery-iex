@@ -86,4 +86,15 @@ defmodule Mastery.Core.Quiz do
   end
 
   defp template(quiz), do: quiz.current_question.template
+
+  defp reset_template_cycle(%{templates: templates, used: used} = quiz)
+       when map_size(templates) == 0 do
+    %__MODULE__{
+      quiz
+      | templates: Enum.group_by(used, fn template -> template.category end),
+        used: []
+    }
+  end
+
+  defp reset_template_cycle(quiz), do: quiz
 end
