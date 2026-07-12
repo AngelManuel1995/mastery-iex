@@ -15,16 +15,6 @@ defmodule Mastery.Core.Question do
     |> elem(0)
   end
 
-  defp evaluate_v1(substitutions, template) do
-    {asked, _bound} = Code.eval_quoted(template.compiled, assigns: substitutions)
-
-    %__MODULE__{
-      asked: asked,
-      substitutions: substitutions,
-      template: template
-    }
-  end
-
   defp evaluate(substitutions, template) do
     %__MODULE__{
       asked: compile(template, substitutions),
@@ -34,8 +24,6 @@ defmodule Mastery.Core.Question do
   end
 
   defp build_substitution({name, choices_or_generator}) do
-    IO.inspect(name)
-    IO.inspect(choices_or_generator)
     {name, choose(choices_or_generator)}
   end
 
